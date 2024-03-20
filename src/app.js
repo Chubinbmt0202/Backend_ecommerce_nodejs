@@ -10,7 +10,9 @@ app.use(helmet()); // bảo mật
 app.use(compression) // giảm dung lượng trả về
 
 // init db
-
+require('./dbs/init.mongoDB');
+const { countConnect } = require('./helper/check.connect');
+countConnect();
 // init routes
 
 app.get('/', (req, res, next) => {
