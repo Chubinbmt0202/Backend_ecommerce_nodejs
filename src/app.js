@@ -1,25 +1,23 @@
-require('dotenv').config();
+// Import Express.js
 const express = require('express');
 const { default: helmet } = require('helmet');
-const compression = require('compression');
 const morgan = require('morgan');
+const compresions = require('compression');
+
+// Khởi tạo ứng dụng Express
 const app = express();
 
 // init middleware
 app.use(morgan('dev'));
-app.use(helmet()); // bảo mật
-app.use(compression) // giảm dung lượng trả về
+app.use(helmet());
+app.use(compresions())
 
 // init db
 require('./dbs/init.mongoDB');
-const { countConnect } = require('./helper/check.connect');
-countConnect();
+
 // init routes
+app.use(require('./routes/index'));
 
-app.get('/', (req, res, next) => {
-    res.send('Hello World');
-});
-
-// handling errors
+// init error handler
 
 module.exports = app;

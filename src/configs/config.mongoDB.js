@@ -1,40 +1,27 @@
-"use strict"
+'use strict'
 
-// level 1
-// const config = {
-//     app: {
-//         port: process.env.PORT || 3000
-//     },
-//     db: {
-//         host: 'localhost',
-//         port: 27017,
-//         name: 'Shop'
-//     }
-// }
-
-// level 2
-const dev = {
+const development = {
     app: {
-        port: process.env.DEV_APP_PORT || 9999
+        port: process.env.DEV_APP_PORT || 3000
     },
     db: {
         host: process.env.DEV_DB_HOST || 'localhost',
-        port: process.env.DEV_DB_PORT || 27017,
-        name: process.env.DEV_DB_NAME || 'Shop'
+        port: process.env.DEV_DB_POST || 27017,
+        name: process.env.DEV_DB_NAME || 'ShopProduct'
     }
 }
 
 const product = {
     app: {
-        port: process.env.PRODUCT_APP_PORT || 9999
+        port: process.env.PRODUCT_APP_PORT || 3000
     },
     db: {
         host: process.env.PRODUCT_DB_HOST || 'localhost',
-        port: process.env.PRODUCT_DB_PORT || 27017,
+        port: process.env.PRODUCT_DB_POST || 27017,
         name: process.env.PRODUCT_DB_NAME || 'ShopProduct'
     }
 }
 
-const config = {dev, product}
-const env = process.env.NODE_ENV || 'dev'
+const config = {product, development}
+const env = process.env.NODE_ENV || 'development'
 module.exports = config[env];
