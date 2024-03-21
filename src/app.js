@@ -11,6 +11,8 @@ const app = express();
 app.use(morgan('dev'));
 app.use(helmet());
 app.use(compresions())
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 
 // init db
 require('./dbs/init.mongoDB');
