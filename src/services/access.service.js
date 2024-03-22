@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const keyTokenService = require('./keyToken.service');
 const { createTokenPair } = require('../auth/AuthUtils');
+const { getInforData } = require('../utils');
 
 const RoleShop = {
     ADMIN: 'admin',
@@ -33,14 +34,27 @@ class AccessService {
             
             if(newShop) {
                 // create publicKey, privateKey
-                const {privateKey, publicKey} = crypto.generateKeyPairSync('rsa', {
-                    modulusLength: 4096,
-                });
+                // const {privateKey, publicKey} = crypto.generateKeyPairSync('rsa', {
+                //     modulusLength: 4096,
+                //     publicKeyEncoding: {
+                //         type: 'pkcs1',
+                //         format: 'pem', // định dạng mã hoá nhị phân
+                //     },
+                //     privateKeyEncoding: {
+                //         type: 'pkcs1',
+                //         format: 'pem',
+                //     }
+                // });
+                // console.log('privateKey', privateKey);
+                // console.log('publicKey', publicKey);
+
+                const privateKey = crypto.randomBytes(64).toString('hex');
+                const publicKey = crypto.randomBytes(64).toString('hex');
                 console.log('privateKey', privateKey);
                 console.log('publicKey', publicKey);
 
-                const publicKeyString = await keyTokenService.createKeyToken({userID: newShop._id, publicKey});
-                if (!publicKeyString) {
+                const keyStore = await keyTokenService.createKeyToken({userID: newShop._id, publicKey, privateKey});
+                if (!keyStore) {
                     return {
                         code: 'xxx',
                         message: 'Tạo keyToken thất bại',
@@ -50,10 +64,11 @@ class AccessService {
                 // create token pair
                 const tokens = await createTokenPair({userID: newShop._id, email}, publicKey, privateKey);
                 console.log('create success', tokens);
+
                 return {
                     code: 201,
                     metadata: {
-                        shop: newShop,
+                        shop: getInforData({fileds: ['_id', 'name', 'email'], object: newShop}),
                         tokens
                     }
                 }
@@ -63,6 +78,7 @@ class AccessService {
                 metadata: null
             }
         } catch (error) {
+            console.error(error);
             return {
                 code: 'xxx',
                 message: error.message,
