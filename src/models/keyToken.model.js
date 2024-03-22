@@ -4,8 +4,8 @@
 
 const {model, Schema} = require('mongoose')
 
-const DOCUMENT_NAME = 'Shop'
-const COLLECTION_NAME = 'shops'
+const DOCUMENT_NAME = 'tokenShop'
+const COLLECTION_NAME = 'tokenShops'
 
 var keyTokenSchema = new Schema({
     user:{

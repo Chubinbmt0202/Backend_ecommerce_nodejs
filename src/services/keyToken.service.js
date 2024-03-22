@@ -19,4 +19,4 @@ class KeyTokenService {
 }
 
 // Export an instance of KeyTokenService, not the class itself
-module.exports = KeyTokenService;
+module.exports = new KeyTokenService();
