@@ -6,6 +6,8 @@ const crypto = require('crypto');
 const keyTokenService = require('./keyToken.service');
 const { createTokenPair } = require('../auth/AuthUtils');
 const { getInforData } = require('../utils');
+const { BadRequestError, ConflictError } = require('../core/error.response');
+
 
 const RoleShop = {
     ADMIN: 'admin',
@@ -16,16 +18,12 @@ const RoleShop = {
 
 class AccessService {
     Register = async ({name, email, password}) => {
-        try {
+
             const holderShop = await ShopModel.findOne({email}).lean(); 
             // sử dụng lean() để chuyển đổi kết quả từ object mongoose sang object javascript
 
             if(holderShop) {
-                return {
-                    code: 'xxx',
-                    message: 'Email đã tồn tại',
-                    status: 'error'
-                }
+                throw new BadRequestError('Tài khoản đã tồn tại')
             }
 
             const passwordHash = await bcrypt.hash(password, 10);
@@ -33,20 +31,6 @@ class AccessService {
             const newShop = await ShopModel.create({name, email, password: passwordHash, role: [RoleShop.SHOP]});
             
             if(newShop) {
-                // create publicKey, privateKey
-                // const {privateKey, publicKey} = crypto.generateKeyPairSync('rsa', {
-                //     modulusLength: 4096,
-                //     publicKeyEncoding: {
-                //         type: 'pkcs1',
-                //         format: 'pem', // định dạng mã hoá nhị phân
-                //     },
-                //     privateKeyEncoding: {
-                //         type: 'pkcs1',
-                //         format: 'pem',
-                //     }
-                // });
-                // console.log('privateKey', privateKey);
-                // console.log('publicKey', publicKey);
 
                 const privateKey = crypto.randomBytes(64).toString('hex');
                 const publicKey = crypto.randomBytes(64).toString('hex');
@@ -77,14 +61,6 @@ class AccessService {
                 code: 200,
                 metadata: null
             }
-        } catch (error) {
-            console.error(error);
-            return {
-                code: 'xxx',
-                message: error.message,
-                status: 'error'
-            }
-        }
     }
 }
 
