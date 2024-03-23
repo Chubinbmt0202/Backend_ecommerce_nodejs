@@ -7,10 +7,9 @@ const HEADER = {
 
 const { findByID } = require('../services/apikey.service');
 
-const apiKey = (req, res, next) => {
+const apiKey = async (req, res, next) => {
     try {
         const key = req.headers[HEADER.API_KEY]?.toString();
-
         if (!key) {
             return res.status(403).json({
                 message: 'Forbidden error' 
@@ -19,11 +18,11 @@ const apiKey = (req, res, next) => {
 
         // check objKey
 
-        const objKey = findByID(key);
+        const objKey = await findByID(key);
         
         if (!objKey) {
             return res.status(403).json({
-                message: 'Forbidden error' 
+                message: 'Forbidden error >>>>>' 
             });
         }
 
@@ -35,4 +34,29 @@ const apiKey = (req, res, next) => {
     }
 }
 
-module.exports = apiKey;
+const permission = (permission) => {
+    return (req, res, next) => {
+        // check permission
+        if(!req.objKey.permissions){
+            return res.status(403).json({
+                message: 'Permission lololol' 
+            });
+        }
+
+        console.log('>>>>>>>>>>', req.objKey.permissions);
+        const validPermission = req.objKey.permissions.includes(permission);
+        if (!validPermission) {
+            return res.status(403).json({
+                message: 'Permission >>>>>>>>>>' 
+            });
+        }
+
+        return next();
+    }
+
+}
+
+module.exports = {
+    apiKey,
+    permission
+};
