@@ -1,17 +1,14 @@
-'use strict';
+"use strict";
 
-const AccessService = require('../services/access.service');
-
+const AccessService = require("../services/access.service");
+const { Created, OK } = require("../core/success.response");
 class AccessController {
-    Register = async (req, res, next) => {
-        try {
-            console.log(`[P]::Register`, req.body);
-            // 200 : oke ; 201 : created
-            return res.status(201).json(await AccessService.Register(req.body)); 
-        } catch (error) {
-            next(error);
-        }
-    }
-}   
+  Register = async (req, res, next) => {
+    new Created({
+        message: "Đăng ký tài khoản thành công",
+        metadata: await AccessService.Register(req.body)
+    }).send(res);
+  };
+}
 
-module.exports = new  AccessController();
+module.exports = new AccessController();
