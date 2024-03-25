@@ -4,8 +4,8 @@
 
 const {model, Schema} = require('mongoose')
 
-const DOCUMENT_NAME = 'tokenShop'
-const COLLECTION_NAME = 'tokenShops'
+const DOCUMENT_NAME = 'ApiKey'
+const COLLECTION_NAME = 'ApiKeys'
 
 var keyTokenSchema = new Schema({
     user:{
@@ -21,11 +21,14 @@ var keyTokenSchema = new Schema({
         type:String,
         required:true,
     },
-    refreshToken:{
+    refreshTokensUsed:{
         type:Array,
         default: [],
-        required:true,
     },
+    refreshToken:{
+        type:String,
+        required:true,
+    }
 }, {
     timestamps: true,
     collection: COLLECTION_NAME
