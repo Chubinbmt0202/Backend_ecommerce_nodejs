@@ -40,8 +40,16 @@ class BadRequestError extends ErrorResponse {
     }
 }
 
+class UnauthorizedError extends ErrorResponse {
+
+    constructor(message = ReasonPhrase.UNAUTHORIZED, statusCode = StatusCode.UNAUTHORIZED) {
+        super(message, statusCode);
+    }
+}
+
 module.exports = {
     ErrorResponse,
     ConflictError,
-    BadRequestError
+    BadRequestError,
+    UnauthorizedError
 }
