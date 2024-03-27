@@ -17,12 +17,13 @@ class AccessController {
     }).send(res);
   };
 
-  logout = async (req, res, next) => {
+  Logout = async (req, res, next) => {
+    const apiKey = req.objKey.key
     new OK({
         message: "Đăng xuất thành công",
-        metadata: await AccessService.logout(req.keyStore)
+        metadata: await AccessService.Logout(apiKey)
     }).send(res);
-  }
+  };
 }
 
 module.exports = new AccessController();
