@@ -13,6 +13,7 @@ const {
 } = require("../core/error.response");
 const { findByEmail } = require("./shop.service");
 const userModel = require("../models/user.model");
+const shopModel = require("../models/shop.model");
 const keyTokenModel = require("../models/keyToken.model");
 const keyApiModel = require("../models/apiKey.model");
 
@@ -25,7 +26,7 @@ const RoleShop = {
 
 class AccessService {
   Register = async ({ name, email, password }) => {
-    const holderShop = await userModel.findOne({ email }).lean();
+    const holderShop = await shopModel.findOne({ email }).lean();
     // sử dụng lean() để chuyển đổi kết quả từ object mongoose sang object javascript
 
     if (holderShop) {
@@ -40,6 +41,7 @@ class AccessService {
       password: passwordHash,
       role: [RoleShop.SHOP],
     });
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>SADASD', newShop);
 
     if (newShop) {
       const privateKey = crypto.randomBytes(64).toString("hex");
@@ -50,6 +52,7 @@ class AccessService {
         publicKey,
         privateKey,
       });
+      console.log("keyStore", keyStore);
       if (!keyStore) {
         return {
           code: "xxx",
@@ -81,11 +84,6 @@ class AccessService {
     };
   };
 
-  // 1 check email
-  // 2 check password
-  // 3 create access token and refresh token
-  // 4 genrate key token
-  // 5 get data and login
   Login = async ({ email, password, refreshToken = null }) => {
     const foundShop = await findByEmail({ email });
 
