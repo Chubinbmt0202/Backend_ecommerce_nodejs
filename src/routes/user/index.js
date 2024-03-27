@@ -8,10 +8,8 @@ const router = express.Router();
 
 router.post("/shop/register", asyncHandler(AccessController.Register));
 router.post("/shop/login", asyncHandler(AccessController.Login));
+router.post("/shop/logout", asyncHandler(AccessController.Logout));
 
-/// middleware
-router.use(authenticator)
-// logout
-router.post("/shop/logout", asyncHandler(AccessController.logout));
+
 
 module.exports = router;

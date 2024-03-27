@@ -48,15 +48,20 @@ const authenticator = async (req, res, next) => {
 
     // 2
     const keyStore = await findByUserID(userID);
-    // console.log('keyStore', keyStore);
+    console.log('keyStore', keyStore);
     if (!keyStore) throw new UnauthorizedError("Không tìm thấy keyStore");
     req.keyStore = keyStore.user.toString();
+    
+    // 6. Perform logout logic here
+    // For example, you can remove the user's access token from the keyStore
+    // and invalidate the refresh token if necessary
+    
+    next(); // Call next() to proceed to the next middleware or route handler
   } catch (error) {
-    throw error;
+    next(error); // Call next() with the error to pass it to the error handler
   }
-
-  // 3
 };
+
 
 module.exports = {
   createTokenPair,

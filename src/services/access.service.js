@@ -12,6 +12,9 @@ const {
   UnauthorizedError,
 } = require("../core/error.response");
 const { findByEmail } = require("./shop.service");
+const userModel = require("../models/user.model");
+const keyTokenModel = require("../models/keyToken.model");
+const keyApiModel = require("../models/apiKey.model");
 
 const RoleShop = {
   ADMIN: "admin",
@@ -22,7 +25,7 @@ const RoleShop = {
 
 class AccessService {
   Register = async ({ name, email, password }) => {
-    const holderShop = await ShopModel.findOne({ email }).lean();
+    const holderShop = await userModel.findOne({ email }).lean();
     // sử dụng lean() để chuyển đổi kết quả từ object mongoose sang object javascript
 
     if (holderShop) {
@@ -99,7 +102,7 @@ class AccessService {
     const privateKey = crypto.randomBytes(64).toString("hex");
     const publicKey = crypto.randomBytes(64).toString("hex");
 
-    const {_id: userID} = foundShop 
+    const { _id: userID } = foundShop;
     const tokens = await createTokenPair(
       { userID, email },
       publicKey,
@@ -109,7 +112,8 @@ class AccessService {
 
     await KeyTokenService.createKeyToken({
       refreshToken: tokens.refreshToken,
-      privateKey, publicKey,
+      privateKey,
+      publicKey,
     });
 
     return {
@@ -121,12 +125,22 @@ class AccessService {
     };
   };
 
-  logout = async ({ keyStore }) => {
-      const delKey = await KeyTokenService.removeKeyByID(keyStore)
-      console.log('delKey', delKey);
-      return delKey
-  }
-      
+  Logout = async ( apiKey ) => {
+    const apiKeyLogout = await keyApiModel.findOneAndDelete({ key: apiKey }).lean();
+    
+    if (apiKeyLogout) {
+      return {
+        code: 200,
+        metadata: apiKeyLogout,
+        message: "Thành công",
+      };
+    } else {
+      return {
+        code: 400,
+        message: "Không tìm thấy key",
+      };
+    }
+  };
 }
 
 module.exports = new AccessService();
